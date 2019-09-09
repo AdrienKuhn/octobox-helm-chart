@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "octobox-chart.fullname" . }}-{{ .Values.nginx.name }}
+  labels:
+{{ include "octobox-chart.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "octobox-chart.name" . }}-{{ .Values.nginx.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "octobox-chart.name" . }}-{{ .Values.nginx.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.nginx.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      initContainers:
+        - name: {{ .Chart.Name }}-public
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          command: ["cp", "-r", "/usr/src/app/public/.", "/shared-data"]
+          volumeMounts:
+            - mountPath: /shared-data
+              name: public
+      containers:
+        - name: {{ .Chart.Name }}-app
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+          ports:
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 443
+          #   initialDelaySeconds: 60
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 443
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          resources:
+            {{- toYaml .Values.nginx.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /usr/src/app/public
+              name: public
+            - mountPath: /etc/nginx/conf.d/
+              name: nginx-config
+      {{- with .Values.nginx.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.nginx.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.nginx.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - emptyDir: {}
+          name: public
+        - configMap:
+            name: {{ include "octobox-chart.fullname" . }}-nginx
+          name: nginx-config

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "octobox-chart.fullname" . }}-test-connection"
+  labels:
+{{ include "octobox-chart.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "octobox-chart.fullname" . }}:{{ .Values.app.service.port }}']
+  restartPolicy: Never
