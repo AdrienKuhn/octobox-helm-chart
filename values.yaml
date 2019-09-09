@@ -16,6 +16,8 @@ app:
   replicaCount: 1
   imagePullSecrets: []
 
+  restartPolicy: Always
+
   config:
     DATABASE: postgres
     RAILS_ENV: development
@@ -70,6 +72,8 @@ nginx:
     repository: krewh/hardened-nginx
     tag: latest
     pullPolicy: Always
+
+  restartPolicy: Always
 
   replicaCount: 1
   imagePullSecrets: []

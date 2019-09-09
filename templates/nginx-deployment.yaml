@@ -16,6 +16,7 @@ spec:
         app.kubernetes.io/name: {{ include "octobox-chart.name" . }}-{{ .Values.nginx.name }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      restartPolicy: {{ .Values.nginx.restartPolicy }}
     {{- with .Values.nginx.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
