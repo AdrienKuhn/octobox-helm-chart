@@ -9,23 +9,56 @@ This Helm chart will deploy an [Octobox](https://github.com/octobox/octobox) ins
 
 ## Configuration
 
-| Variable                                  | Type   | Description                  | Default                                          |
-|-------------------------------------------|--------|------------------------------|--------------------------------------------------|
-| `app.config.DATABASE`                       | Config | Database driver              | `postgres`                                       |
-| `app.config.RAILS_ENV`                      | Config | App environment              | `development`                                    |
-| `app.config.GITHUB_CLIENT_ID`               | Config | GitHub Client ID             | `github_client_id`                               |
-| `app.config.OCTOBOX_DATABASE_HOST`          | Config | Database hostname            | `db.octobox.svc.cluster.local`                   |
-| `app.config.OCTOBOX_DATABASE_NAME`          | Config | Database name                | `postgres`                                       |
-| `app.config.OCTOBOX_DATABASE_PORT`          | Config | Database port                | `5432`                                           |
-| `app.config.PERSONAL_ACCESS_TOKENS_ENABLED` | Config | Enable personal access token | `0`                                              |
-| `app.secrets.GITHUB_CLIENT_SECRET`          | Secret | GitHub Client secret         | `github_client_secret`                           |
-| `app.secrets.OCTOBOX_DATABASE_USERNAME`     | Secret | Database username            | `postgres`                                       |
-| `app.secrets.OCTOBOX_DATABASE_PASSWORD`     | Secret | Database password            | `development`                                    |
-| `app.secrets.REDIS_URL`                     | Secret | Redis URL                    | `redis://redis-master.octobox.svc.cluster.local` |
-| `app.secrets.SECRET_KEY_BASE`               | Secret | Secret key                   | `changeme`                                       |
-| `ingress.enabled`                           | Secret | Enable ingress               | `false`                                          |
-
 Check the [values.yaml file](values.yaml) for all available configuration values.
+
+| Variable                                    | Description                        | Default                                          |
+|---------------------------------------------|------------------------------------|--------------------------------------------------|
+| `app.name`                                  | Octobox container name             | `app`                                            |
+| `app.image.repository`                      | Octobox image name                 | `octoboxio/octobox`                              |
+| `app.image.tag`                             | Octobox image tag                  | `latest`                                         |
+| `app.image.pullPolicy`                      | Octobox image pull policy          | `Always`                                         |
+| `app.replicaCount`                          | Octobox replica count              | `1`                                              |
+| `app.imagePullSecrets`                      | Octobox pull secrets               | `[]`                                             |
+| `app.restartPolicy`                         | Octobox restart policy             | `Always`                                         |
+| `app.config.DATABASE`                       | Database driver                    | `postgres`                                       |
+| `app.config.RAILS_ENV`                      | App environment                    | `development`                                    |
+| `app.config.GITHUB_CLIENT_ID`               | GitHub Client ID                   | `github_client_id`                               |
+| `app.config.OCTOBOX_DATABASE_HOST`          | Database hostname                  | `db.octobox.svc.cluster.local`                   |
+| `app.config.OCTOBOX_DATABASE_NAME`          | Database name                      | `postgres`                                       |
+| `app.config.OCTOBOX_DATABASE_PORT`          | Database port                      | `5432`                                           |
+| `app.config.PERSONAL_ACCESS_TOKENS_ENABLED` | Enable personal access token       | `0`                                              |
+| `app.secrets.GITHUB_CLIENT_SECRET`          | GitHub Client secret               | `github_client_secret`                           |
+| `app.secrets.OCTOBOX_DATABASE_USERNAME`     | Database username                  | `postgres`                                       |
+| `app.secrets.OCTOBOX_DATABASE_PASSWORD`     | Database password                  | `development`                                    |
+| `app.secrets.REDIS_URL`                     | Redis URL                          | `redis://redis-master.octobox.svc.cluster.local` |
+| `app.secrets.SECRET_KEY_BASE`               | Secret key                         | `changeme`                                       |
+| `app.service.type`                          | Octobox service type               | `ClusterIP`                                      |
+| `app.service.port`                          | Octobox service port               | `3000`                                           |
+| `app.resources`                             | Octobox container resources        | `{}`                                             |
+| `app.nodeSelector`                          | Octobox container node selector    | `{}`                                             |
+| `app.tolerations`                           | Octobox container node tolerations | `[]`                                             |
+| `app.affinity`                              | Octobox container node affinity    | `{}`                                             |
+| `cronjob.name`                              | Cronjob name                       | `sync-notifications`                             |
+| `cronjob.restartPolicy`                     | Cronjob restart policy             | `OnFailure`                                      |
+| `cronjob.schedule`                          | Cronjob schedule                   | `"*/5 * * * *"`                                  |
+| `cronjob.command`                           | Cronjob command                    | `[/usr/local/bin/rake]`                          |
+| `cronjob.args`                              | Cronjob args                       | `["tasks:sync_notifications"]`                   |
+| `nginx.image.repository`                    | Nginx image name                   | `krewh/hardened-nginx`                           |
+| `nginx.image.tag`                           | Nginx image tag                    | `latest`                                         |
+| `nginx.image.pullPolicy`                    | Nginx image pull policy            | `Always`                                         |
+| `nginx.replicaCount`                        | Nginx replica count                | `1`                                              |
+| `nginx.imagePullSecrets`                    | Nginx pull secrets                 | `[]`                                             |
+| `nginx.restartPolicy`                       | Nginx restart policy               | `Always`                                         |
+| `nginx.service.type`                        | Nginx service type                 | `ClusterIP`                                      |
+| `nginx.service.port`                        | Nginx service port                 | `443`                                            |
+| `nginx.resources`                           | Nginx container resources          | `{}`                                             |
+| `nginx.nodeSelector`                        | Nginx container node selector      | `{}`                                             |
+| `nginx.tolerations`                         | Nginx container node tolerations   | `[]`                                             |
+| `nginx.affinity`                            | Nginx container node affinity      | `{}`                                             |
+| `ingress.enabled`                           | Enable ingress                     | `false`                                          |
+| `ingress.annotations`                       | Ingress annotations                | `{kubernetes.io/ingress.class: nginx, nginx.ingress.kubernetes.io/secure-backends: "true"}` |
+| `ingress.hosts`                             | Ingress hosts configuration        | `[]`                                             |
+| `ingress.tls`                               | Ingress TLS configuration          | `[]`                                             |
 
 ## Example
 
