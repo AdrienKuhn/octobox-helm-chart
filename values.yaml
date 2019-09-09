@@ -54,6 +54,15 @@ app:
 
   affinity: {}
 
+cronjob:
+  name: sync-notifications
+  restartPolicy: OnFailure
+  schedule: "*/5 * * * *"
+  command:
+    - /usr/local/bin/rake
+  args:
+    - "tasks:sync_notifications"
+
 nginx:
   name: nginx
 
