@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+  labels:
+{{ include "octobox-chart.labels" . | indent 4 }}
+data:
+{{- range $key, $value := .Values.app.config }}
+  {{ $key }}: "{{ $value }}"
+{{- end }}

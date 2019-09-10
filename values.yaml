@@ -1,0 +1,122 @@
+# Default values for octobox-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+app:
+  name: app
+
+  image:
+    repository: octoboxio/octobox
+    tag: latest
+    pullPolicy: Always
+
+  replicaCount: 1
+  imagePullSecrets: []
+
+  restartPolicy: Always
+
+  config:
+    DATABASE: postgres
+    FETCH_SUBJECT: 0
+    GITHUB_CLIENT_ID: github_client_id
+    GA_ANALYTICS_ID: ''
+    MINIMUM_REFRESH_INTERVAL: 5
+    OCTOBOX_DATABASE_HOST: db.octobox.svc.cluster.local
+    OCTOBOX_DATABASE_NAME: postgres
+    OCTOBOX_DATABASE_PORT: 5432
+    OPEN_IN_SAME_TAB: 0
+    PERSONAL_ACCESS_TOKENS_ENABLED: 0
+    PUSH_NOTIFICATIONS: 0
+    RAILS_ENV: development
+
+  secrets:
+    GITHUB_CLIENT_SECRET: github_client_secret
+    OCTOBOX_DATABASE_USERNAME: postgres
+    OCTOBOX_DATABASE_PASSWORD: development
+    REDIS_URL: redis://redis-master.octobox.svc.cluster.local
+    SECRET_KEY_BASE: changeme
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+cronjob:
+  name: sync-notifications
+  restartPolicy: OnFailure
+  schedule: "*/5 * * * *"
+  command:
+    - /usr/local/bin/rake
+  args:
+    - "tasks:sync_notifications"
+
+nginx:
+  name: nginx
+
+  image:
+    repository: krewh/hardened-nginx
+    tag: latest
+    pullPolicy: Always
+
+  restartPolicy: Always
+
+  replicaCount: 1
+  imagePullSecrets: []
+
+  service:
+    type: ClusterIP
+    port: 443
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    #kubernetes.io/tls-acme: "true"
+
+  hosts:
+    - host: chart-example.local
+      paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
