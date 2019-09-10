@@ -62,7 +62,7 @@ Check the [values.yaml file](values.yaml) for all available configuration values
 | `nginx.tolerations`                         | Nginx container node tolerations               | `[]`                                             |
 | `nginx.affinity`                            | Nginx container node affinity                  | `{}`                                             |
 | `ingress.enabled`                           | Enable ingress                                 | `false`                                          |
-| `ingress.annotations`                       | Ingress annotations                            | `{kubernetes.io/ingress.class: nginx, nginx.ingress.kubernetes.io/secure-backends: "true"}` |
+| `ingress.annotations`                       | Ingress annotations                            | `{kubernetes.io/ingress.class: nginx, nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"}` |
 | `ingress.hosts`                             | Ingress hosts configuration                    | `[]`                                             |
 | `ingress.tls`                               | Ingress TLS configuration                      | `[]`                                             |
 
