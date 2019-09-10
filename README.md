@@ -48,6 +48,7 @@ Check the [values.yaml file](values.yaml) for all available configuration values
 | `cronjob.schedule`                          | Cronjob schedule                               | `"*/5 * * * *"`                                  |
 | `cronjob.command`                           | Cronjob command                                | `[/usr/local/bin/rake]`                          |
 | `cronjob.args`                              | Cronjob args                                   | `["tasks:sync_notifications"]`                   |
+| `nginx.name`                                | Nginx container name                           | `nginx`                                          |
 | `nginx.image.repository`                    | Nginx image name                               | `krewh/hardened-nginx`                           |
 | `nginx.image.tag`                           | Nginx image tag                                | `latest`                                         |
 | `nginx.image.pullPolicy`                    | Nginx image pull policy                        | `Always`                                         |
