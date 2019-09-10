@@ -24,7 +24,7 @@ Check the [values.yaml file](values.yaml) for all available configuration values
 | `app.config.FETCH_SUBJECT`                  | Experimental - extra info on each notification | `0`                                              |
 | `app.config.GITHUB_CLIENT_ID`               | GitHub Client ID                               | `github_client_id`                               |
 | `app.config.GA_ANALYTICS_ID`                | Google Analytics ID                            | `nil`                                            |
-| `app.config.MINIMUM_REFRESH_INTERVAL        | Min. number of mins between syncs              | `5`                                              |
+| `app.config.MINIMUM_REFRESH_INTERVAL`       | Min. number of mins between syncs              | `5`                                              |
 | `app.config.OCTOBOX_DATABASE_HOST`          | Database hostname                              | `db.octobox.svc.cluster.local`                   |
 | `app.config.OCTOBOX_DATABASE_NAME`          | Database name                                  | `postgres`                                       |
 | `app.config.OCTOBOX_DATABASE_PORT`          | Database port                                  | `5432`                                           |
