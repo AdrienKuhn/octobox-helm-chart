@@ -66,12 +66,19 @@ Check the [values.yaml file](values.yaml) for all available configuration values
 | `ingress.hosts`                             | Ingress hosts configuration                    | `[]`                                             |
 | `ingress.tls`                               | Ingress TLS configuration                      | `[]`                                             |
 
-## Example
+## Installation
+
+### Add repository
+
+Follow instructions at [https://adrienkuhn.github.io/helm-repo/](https://adrienkuhn.github.io/helm-repo/)
+
+### Install
 
 ```bash
-helm install . \
+helm install adrienkuhn-helm-repo/octobox \
  --name octobox \
  --namespace octobox \
+ --version 0.1.1 \
  --set app.config.DATABASE=postgres \
  --set app.config.RAILS_ENV=production \
  --set app.config.GITHUB_CLIENT_ID=github_client_id \
