@@ -60,16 +60,31 @@ spec:
                     configMapKeyRef:
                       name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
                       key: DATABASE
-                - name: RAILS_ENV
+                - name: FETCH_SUBJECT
                   valueFrom:
                     configMapKeyRef:
                       name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
-                      key: RAILS_ENV
+                      key: FETCH_SUBJECT
                 - name: GITHUB_CLIENT_ID
                   valueFrom:
                     configMapKeyRef:
                       name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
                       key: GITHUB_CLIENT_ID
+                - name: GITHUB_SCOPE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: GITHUB_SCOPE
+                - name: GA_ANALYTICS_ID
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: GA_ANALYTICS_ID
+                - name: MINIMUM_REFRESH_INTERVAL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: MINIMUM_REFRESH_INTERVAL
                 - name: OCTOBOX_DATABASE_HOST
                   valueFrom:
                     configMapKeyRef:
@@ -85,8 +100,23 @@ spec:
                     configMapKeyRef:
                       name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
                       key: OCTOBOX_DATABASE_PORT
+                - name: OPEN_IN_SAME_TAB
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: OPEN_IN_SAME_TAB
                 - name: PERSONAL_ACCESS_TOKENS_ENABLED
                   valueFrom:
                     configMapKeyRef:
                       name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
                       key: PERSONAL_ACCESS_TOKENS_ENABLED
+                - name: PUSH_NOTIFICATIONS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: PUSH_NOTIFICATIONS
+                - name: RAILS_ENV
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                      key: RAILS_ENV

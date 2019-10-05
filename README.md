@@ -23,6 +23,7 @@ Check the [values.yaml file](values.yaml) for all available configuration values
 | `app.config.DATABASE`                       | Database driver                                | `postgres`                                       |
 | `app.config.FETCH_SUBJECT`                  | Experimental - extra info on each notification | `0`                                              |
 | `app.config.GITHUB_CLIENT_ID`               | GitHub Client ID                               | `github_client_id`                               |
+| `app.config.GITHUB_SCOPE`                   | GitHub scopes                                  | `notifications`                                  |
 | `app.config.GA_ANALYTICS_ID`                | Google Analytics ID                            | `nil`                                            |
 | `app.config.MINIMUM_REFRESH_INTERVAL`       | Min. number of mins between syncs              | `5`                                              |
 | `app.config.OCTOBOX_DATABASE_HOST`          | Database hostname                              | `db.octobox.svc.cluster.local`                   |
@@ -78,7 +79,6 @@ Follow instructions at [https://adrienkuhn.github.io/helm-repo/](https://adrienk
 helm install adrienkuhn-helm-repo/octobox \
  --name octobox \
  --namespace octobox \
- --version 0.1.1 \
  --set app.config.DATABASE=postgres \
  --set app.config.RAILS_ENV=production \
  --set app.config.GITHUB_CLIENT_ID=github_client_id \
