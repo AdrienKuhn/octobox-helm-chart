@@ -66,6 +66,11 @@ spec:
                 configMapKeyRef:
                   name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
                   key: GITHUB_CLIENT_ID
+            - name: GITHUB_SCOPE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "octobox-chart.fullname" . }}-{{ .Values.app.name }}
+                  key: GITHUB_SCOPE
             - name: GA_ANALYTICS_ID
               valueFrom:
                 configMapKeyRef:
