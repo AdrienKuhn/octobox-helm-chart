@@ -1,6 +1,53 @@
 apiVersion: v2
-appVersion: "1.0"
-description: An Octobox chart for Kubernetes
 name: octobox
+description: An Octobox Helm chart for Kubernetes
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
-version: 0.1.5
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+version: 0.2.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application.
+appVersion: latest
+
+dependencies: # A list of the chart requirements (optional)
+  - name: postgresql
+    version: 8.6.10
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled, global.postgresql.enabled
+    tags: # (optional)
+    #  - Tags can be used to group charts for enabling/disabling together
+    enabled: true
+    import-values: # (optional)
+    # - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
+    alias: postgresql
+  - name: redis
+    version: 10.5.14
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled, global.redis.enabled
+    tags: # (optional)
+    #  - Tags can be used to group charts for enabling/disabling together
+    enabled: true
+    import-values: # (optional)
+    # - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
+    alias: redis
+  - name: nginx
+    version: 0.1.0
+    repository: https://adrienkuhn.github.io/helm-repo/
+    condition: nginx.enabled, global.nginx.enabled
+    tags: # (optional)
+    #  - Tags can be used to group charts for enabling/disabling together
+    enabled: true
+    import-values: # (optional)
+    # - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
+    alias: nginx
