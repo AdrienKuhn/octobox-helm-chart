@@ -34,27 +34,27 @@ spec:
                 - name: GITHUB_CLIENT_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "octobox.fullname" . }}
+                      name: {{ include "octobox.secretName" . }}
                       key: githubClientSecret
                 - name: OCTOBOX_DATABASE_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "octobox.fullname" . }}
+                      name: {{ include "octobox.secretName" . }}
                       key: octoboxDatabasePassword
                 - name: OCTOBOX_DATABASE_USERNAME
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "octobox.fullname" . }}
+                      name: {{ include "octobox.secretName" . }}
                       key: octoboxDatabaseUsername
                 - name: REDIS_URL
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "octobox.fullname" . }}
+                      name: {{ include "octobox.secretName" . }}
                       key: redisUrl
                 - name: SECRET_KEY_BASE
                   valueFrom:
                     secretKeyRef:
-                      name: {{ include "octobox.fullname" . }}
+                      name: {{ include "octobox.secretName" . }}
                       key: secretKeyBase
                 - name: DATABASE
                   valueFrom:
