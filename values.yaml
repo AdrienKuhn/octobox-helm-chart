@@ -1,69 +1,45 @@
-# Default values for octobox-chart.
+# Default values for octobox.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+replicaCount: 1
+
+image:
+  repository: octoboxio/octobox
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-app:
-  name: app
+config:
+  database: postgres
+  fetchSubject: 1
+  githubClientId: changeme
+  githubScope: 'notifications'
+  gaAnalyticsId: ''
+  minimumRefreshInterval: 5
+  octoboxDatabaseHost: octobox-postgresql.octobox.svc.cluster.local
+  octoboxDatabaseName: octobox
+  octoboxDatabasePort: 5432
+  openInSameTab: 0
+  personalAccessTokensEnabled: 0
+  pushNotifications: 1
+  railsEnv: production
+  websocketAllowedOrigins: https://localhost
 
-  image:
-    repository: octoboxio/octobox
-    tag: latest
-    pullPolicy: Always
-
-  replicaCount: 1
-  imagePullSecrets: []
-
-  restartPolicy: Always
-
-  config:
-    DATABASE: postgres
-    FETCH_SUBJECT: 0
-    GITHUB_CLIENT_ID: github_client_id
-    GITHUB_SCOPE: notifications
-    GA_ANALYTICS_ID: ''
-    MINIMUM_REFRESH_INTERVAL: 5
-    OCTOBOX_DATABASE_HOST: db.octobox.svc.cluster.local
-    OCTOBOX_DATABASE_NAME: postgres
-    OCTOBOX_DATABASE_PORT: 5432
-    OPEN_IN_SAME_TAB: 0
-    PERSONAL_ACCESS_TOKENS_ENABLED: 0
-    PUSH_NOTIFICATIONS: 0
-    RAILS_ENV: development
-
-  secrets:
-    GITHUB_CLIENT_SECRET: github_client_secret
-    OCTOBOX_DATABASE_USERNAME: postgres
-    OCTOBOX_DATABASE_PASSWORD: development
-    REDIS_URL: redis://redis-master.octobox.svc.cluster.local
-    SECRET_KEY_BASE: changeme
-
-  service:
-    type: ClusterIP
-    port: 3000
-
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
+existingSecret:
+secrets:
+  githubClientSecret: changeme
+  octoboxDatabasePassword: changeme
+  octoboxDatabaseUsername: postgres
+  redisUrl: redis://:changeme@octobox-redis-master.octobox.svc.cluster.local
+  secretKeyBase: changeme # This secret should be secure enough, it will not work if railsEnv = production
 
 cronjob:
   name: sync-notifications
+  enabled: true
   restartPolicy: OnFailure
   schedule: "*/5 * * * *"
   command:
@@ -71,22 +47,180 @@ cronjob:
   args:
     - "tasks:sync_notifications"
 
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+postgresql:
+  # https://hub.helm.sh/charts/bitnami/postgresql
+  enabled: true
+  existingSecret:
+  postgresqlDatabase: octobox
+  postgresqlPassword: changeme
+  persistence:
+    enabled: true
+    size: 8Gi
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+redis:
+  # https://hub.helm.sh/charts/bitnami/redis
+  enabled: true
+  cluster:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources: {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+  password: changeme
+  existingSecret:
+  existingSecretPasswordKey:
+
 nginx:
-  name: nginx
+  # https://github.com/AdrienKuhn/nginx-helm-chart
+  enabled: true
 
-  image:
-    repository: krewh/hardened-nginx
-    tag: latest
-    pullPolicy: Always
+  initContainers:
+    - name: public
+      image: "octoboxio/octobox:latest"
+      command: ["cp", "-r", "/usr/src/app/public/.", "/shared-data"]
+      volumeMounts:
+        - mountPath: /shared-data
+          name: public
 
-  restartPolicy: Always
+  volumeMounts:
+    - mountPath: /usr/src/app/public
+      name: public
 
-  replicaCount: 1
-  imagePullSecrets: []
+  volumes:
+    - emptyDir: {}
+      name: public
 
   service:
     type: ClusterIP
     port: 443
+
+  serverBlock: |-
+    server {
+      listen 443 ssl http2;
+      listen [::]:443 ssl http2;
+      server_name _;
+
+      set_real_ip_from 0.0.0.0/0;
+      real_ip_header X-Forwarded-For;
+
+      location ~ ^/(assets/|android-icon-|apple-icon|browserconfig.xml|favicon|icon/|manifest.json|ms-icon-|robots.txt) {
+        root /usr/src/app/public/;
+        try_files $uri =404;
+        expires 1y;
+        add_header Cache-Control "public,max-age=31536000,immutable";
+        access_log off;
+        gzip on;
+        gzip_types *;
+      }
+
+      location / {
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://octobox:3000;
+      }
+
+      location /cable {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        add_header 'Access-Control-Allow-Origin' "$http_origin";
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        proxy_pass http://octobox:3000/cable;
+      }
+    }
 
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -100,24 +234,15 @@ nginx:
     #   cpu: 100m
     #   memory: 128Mi
 
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-ingress:
-  enabled: false
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    #kubernetes.io/tls-acme: "true"
-
-  hosts:
-    - host: chart-example.local
-      paths: []
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  ingress:
+    enabled: false
+    annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths: []
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local

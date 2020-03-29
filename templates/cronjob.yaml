@@ -1,0 +1,138 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "octobox.fullname" . }}-{{ .Values.cronjob.name }}
+  labels:
+    {{- include "octobox.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "octobox.selectorLabels" . | nindent 8 }}
+    spec:
+      template:
+        spec:
+        {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          serviceAccountName: {{ include "octobox.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          restartPolicy: {{ .Values.cronjob.restartPolicy }}
+          containers:
+            - name: {{ .Chart.Name }}-{{ .Values.cronjob.name }}
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              command: {{ .Values.cronjob.command }}
+              args: {{ .Values.cronjob.args }}
+              env:
+                - name: GITHUB_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: githubClientSecret
+                - name: OCTOBOX_DATABASE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: octoboxDatabasePassword
+                - name: OCTOBOX_DATABASE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: octoboxDatabaseUsername
+                - name: REDIS_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: redisUrl
+                - name: SECRET_KEY_BASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: secretKeyBase
+                - name: DATABASE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: database
+                - name: FETCH_SUBJECT
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: fetchSubject
+                - name: GA_ANALYTICS_ID
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: gaAnalyticsId
+                - name: GITHUB_CLIENT_ID
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: githubClientId
+                - name: GITHUB_SCOPE
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: githubScope
+                - name: MINIMUM_REFRESH_INTERVAL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: minimumRefreshInterval
+                - name: OCTOBOX_DATABASE_HOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: octoboxDatabaseHost
+                - name: OCTOBOX_DATABASE_NAME
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: octoboxDatabaseName
+                - name: OCTOBOX_DATABASE_PORT
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: octoboxDatabasePort
+                - name: OPEN_IN_SAME_TAB
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: openInSameTab
+                - name: PERSONAL_ACCESS_TOKENS_ENABLED
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: personalAccessTokensEnabled
+                - name: PUSH_NOTIFICATIONS
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: pushNotifications
+                - name: RAILS_ENV
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "octobox.fullname" . }}
+                      key: railsEnv
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+        {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+{{- end }}

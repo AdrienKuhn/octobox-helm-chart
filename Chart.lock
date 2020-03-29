@@ -1,0 +1,12 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.6.10
+- name: redis
+  repository: https://charts.bitnami.com/bitnami
+  version: 10.5.14
+- name: nginx
+  repository: https://adrienkuhn.github.io/helm-repo/
+  version: 0.1.0
+digest: sha256:abfc06a0cbd9e0709188bf05dbed52a86dfbddaa0c93536c0a92aefb41c3950d
+generated: "2020-03-27T19:49:44.11069-04:00"
