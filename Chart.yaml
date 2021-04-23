@@ -14,7 +14,7 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 0.2.1
+version: 0.2.2
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
@@ -42,7 +42,7 @@ dependencies: # A list of the chart requirements (optional)
     # - ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
     alias: redis
   - name: nginx
-    version: 0.1.0
+    version: 0.1.1
     repository: https://adrienkuhn.github.io/helm-repo/
     condition: nginx.enabled, global.nginx.enabled
     tags: # (optional)

@@ -7,6 +7,6 @@ dependencies:
   version: 10.5.14
 - name: nginx
   repository: https://adrienkuhn.github.io/helm-repo/
-  version: 0.1.0
-digest: sha256:abfc06a0cbd9e0709188bf05dbed52a86dfbddaa0c93536c0a92aefb41c3950d
-generated: "2020-03-27T19:49:44.11069-04:00"
+  version: 0.1.1
+digest: sha256:0db58f6ed3c2e7b37dbfca239689db4f1c13045d706106793cb20a54b771e92f
+generated: "2021-04-22T21:53:36.139522-04:00"
